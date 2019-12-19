@@ -1,0 +1,55 @@
+{
+    "name": "Edx",
+    "description": "<p>EdX is a massive open online course (MOOC) provider and online learning platform. It hosts online university-level courses in a wide range of disciplines to a worldwide audience, some at no charge. It also conducts research into learning based on how people use its platform. EdX differs from other MOOC platforms, such as Coursera and Udacity, in that it is nonprofit and runs on an open-source software platform.<\/p>",
+    "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/logos\/edx_logo_final.png",
+    "tags": [
+        "api provider",
+        "have api",
+        "target",
+        "universities",
+        "university service"
+    ],
+    "created": "2019-12-19",
+    "modified": "2019-12-19",
+    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/edx\/master\/apis.json",
+    "specificationVersion": "0.14",
+    "apis": [
+        {
+            "name": "Edx",
+            "description": null,
+            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/logos\/edx_logo_final.png",
+            "humanURL": "https:\/\/www.edx.org\/",
+            "baseURL": "",
+            "tags": [],
+            "properties": [
+                {
+                    "type": "x-openapi",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/edx-openapi.json"
+                }
+            ]
+        }
+    ],
+    "include": [],
+    "x-common": [
+        {
+            "type": "Developers",
+            "url": "http:\/\/edx.readthedocs.org\/projects\/edx-developer-guide\/en\/latest\/"
+        },
+        {
+            "type": "Documentation",
+            "url": "http:\/\/docs.edxapi.apiary.io\/"
+        },
+        {
+            "type": "Github",
+            "url": "https:\/\/github.com\/edx"
+        },
+        {
+            "type": "Twitter",
+            "url": "https:\/\/twitter.com\/edXOnline"
+        },
+        {
+            "type": "Website",
+            "url": "https:\/\/www.edx.org\/"
+        }
+    ]
+}
