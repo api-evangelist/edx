@@ -8,25 +8,25 @@ modified: '2026-05-08'
 reconciled: false
 tags:
 - EdTech
+- Online Learning
+- Open Source
 - MOOC
-- Learning
-- University
-- Open edX
 - Rate Limiting
 - Quotas
 - Throttling
-description: Placeholder rate-limit artifact for edX. Replace with real limits once researched.
-notes: Initial scaffold — limits have not yet been reconciled.
+description: Open edX rate limits are configurable per deployment; public edx.org API limits are not openly
+  documented.
+notes: Partner agreements typically include negotiated quotas.
 sources:
-- https://www.edx.org/
+- https://docs.openedx.org/
 responseCodes:
   throttled: 429
 limits:
-- name: Default
-  scope: account
-  metric: varies
-  limit: see provider documentation
-  notes: Pending reconciliation.
+- name: Default Open edX
+  scope: deployment
+  metric: requests
+  limit: configurable per deployment
+  notes: Operators set limits via Django/middleware config.
 policies:
 - name: Backoff Strategy
   description: Clients should implement exponential backoff with jitter and honor any Retry-After header.
