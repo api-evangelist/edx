@@ -1,7 +1,7 @@
 aid: edx
 url: https://raw.githubusercontent.com/api-evangelist/edx/refs/heads/main/apis.yml
 name: edX
-x-type: company
+kind: company
 description: edX is an online learning platform now operated by 2U; the underlying Open edX software is
   open source. Open edX exposes a comprehensive REST API surface (Enrollment, Courses, Users, Catalog,
   Discussion, Grades, LTI, Enterprise) and hosts a public API at api.edx.org for partners.
