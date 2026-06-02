@@ -1,0 +1,8 @@
+---
+title: SignalPro & Cirrus Platform
+url: https://edx.com/signalpro-cirrus-platform-30/
+date: '2026-04-08'
+author: Anoop Bowdery
+feed_url: https://edx.com/feed/
+---
+EDX Wireless - Your Best Wireless Planning Software Summary Issue Type Description MegaMesh Master Export New Feature We have introduced a new one-click export feature that enables users to quickly generate a consolidated report containing the information most relevant to them, without having to access multiple menus or GUIs. Building Database menu – Large Buildings New Feature To enhance EDX Wireless indoor capabilities, we have introduced an enhancement that supports the import of large, multi-floor building files. This feature allows users to set the maximum file size for building data ingestion. Cirrus login not working Bug Error encountered when logging into cirrus, this has been resolved Unable to Log in after update Bug Resolved SignalPro crashing after updating to latest internal version Bug Resolved, this issue was contained internally Error in Browser Bug Certain functionality was impacted by OS security settings. The code was updated to help resolve the issue  Lost ‘edit’ functionality in project pane Bug Users could not right click a map layer from the project pane and use the ‘edit’ button. This has been resolved New Articles Region-specific Clutter Estimates for EDX® SignalPro® Projects Configuring the Building Database Menu: MCS Chop Target Size EDX® SignalPro® Mesh Network Design Module User Guide Choosing Uplink or “Talk-in” […] The post SignalPro & Cirrus Platform appeared first on EDX Wireless .
