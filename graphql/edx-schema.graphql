@@ -1,0 +1,1088 @@
+"""
+edX GraphQL Schema
+Conceptual schema derived from the Open edX REST API surface covering:
+course catalog, enrollment, grades, certificates, user profiles, learner activity,
+content blocks, discussions, enterprise, and LTI integrations.
+"""
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+# ─────────────────────────────────────────────
+# Root Query
+# ─────────────────────────────────────────────
+
+type Query {
+  # Course Catalog
+  course(courseId: ID!): Course
+  courses(filter: CourseFilter, pagination: PaginationInput): CourseConnection
+  courseRun(courseRunId: ID!): CourseRun
+  courseRuns(filter: CourseRunFilter, pagination: PaginationInput): CourseRunConnection
+  courseBlock(usageKey: ID!): CourseBlock
+  courseBlocks(courseId: ID!, blockType: BlockType): [CourseBlock!]!
+
+  # Enrollment
+  enrollment(username: String!, courseId: ID!): Enrollment
+  enrollments(username: String!, filter: EnrollmentFilter): [Enrollment!]!
+  courseEnrollments(courseId: ID!, pagination: PaginationInput): EnrollmentConnection
+
+  # Grades
+  courseGrade(username: String!, courseId: ID!): CourseGrade
+  courseGrades(courseId: ID!, pagination: PaginationInput): CourseGradeConnection
+  subsectionGrades(username: String!, courseId: ID!): [SubsectionGrade!]!
+
+  # Certificates
+  certificate(username: String!, courseId: ID!): Certificate
+  certificates(username: String!): [Certificate!]!
+
+  # User Profiles
+  user(username: String!): User
+  users(filter: UserFilter, pagination: PaginationInput): UserConnection
+  userProfile(username: String!): UserProfile
+  userPreferences(username: String!): UserPreferences
+
+  # Learner Activity
+  learnerActivity(username: String!, courseId: ID!): LearnerActivity
+  courseCompletions(courseId: ID!, pagination: PaginationInput): CourseCompletionConnection
+
+  # Discussions
+  discussion(courseId: ID!): Discussion
+  discussionTopics(courseId: ID!): [DiscussionTopic!]!
+  discussionThread(threadId: ID!): DiscussionThread
+  discussionThreads(courseId: ID!, filter: ThreadFilter, pagination: PaginationInput): DiscussionThreadConnection
+
+  # Enterprise
+  enterpriseCustomer(enterpriseId: ID!): EnterpriseCustomer
+  enterpriseCatalog(catalogId: ID!): EnterpriseCatalog
+  enterpriseEnrollments(enterpriseId: ID!, pagination: PaginationInput): EnrollmentConnection
+
+  # LTI
+  ltiProvider(providerId: ID!): LTIProvider
+  ltiProviders: [LTIProvider!]!
+
+  # Programs
+  program(programId: ID!): Program
+  programs(filter: ProgramFilter, pagination: PaginationInput): ProgramConnection
+
+  # Organizations
+  organization(orgKey: String!): Organization
+  organizations(pagination: PaginationInput): OrganizationConnection
+
+  # Tags / Taxonomy
+  taxonomies: [Taxonomy!]!
+  taxonomy(taxonomyId: ID!): Taxonomy
+}
+
+# ─────────────────────────────────────────────
+# Root Mutation
+# ─────────────────────────────────────────────
+
+type Mutation {
+  # Enrollment mutations
+  enrollUser(input: EnrollUserInput!): EnrollUserPayload!
+  unenrollUser(input: UnenrollUserInput!): UnenrollUserPayload!
+  updateEnrollmentMode(input: UpdateEnrollmentModeInput!): UpdateEnrollmentModePayload!
+
+  # Certificate mutations
+  generateCertificate(input: GenerateCertificateInput!): GenerateCertificatePayload!
+  invalidateCertificate(input: InvalidateCertificateInput!): InvalidateCertificatePayload!
+
+  # User profile mutations
+  updateUserProfile(input: UpdateUserProfileInput!): UpdateUserProfilePayload!
+  updateUserPreferences(input: UpdateUserPreferencesInput!): UpdateUserPreferencesPayload!
+
+  # Discussion mutations
+  createDiscussionThread(input: CreateDiscussionThreadInput!): CreateDiscussionThreadPayload!
+  replyToThread(input: ReplyToThreadInput!): ReplyToThreadPayload!
+  flagContent(input: FlagContentInput!): FlagContentPayload!
+
+  # Grade override
+  overrideGrade(input: OverrideGradeInput!): OverrideGradePayload!
+}
+
+# ─────────────────────────────────────────────
+# Course Types
+# ─────────────────────────────────────────────
+
+type Course {
+  id: ID!
+  courseId: String!
+  title: String!
+  shortDescription: String
+  fullDescription: String
+  organization: Organization
+  runs: [CourseRun!]!
+  programs: [Program!]!
+  skills: [Skill!]!
+  tags: [Tag!]!
+  image: CourseImage
+  marketingUrl: String
+  effort: String
+  subjects: [Subject!]!
+  prerequisites: [String!]!
+  syllabus: String
+  level: CourseLevel
+  language: String
+  additionalLanguages: [String!]!
+  activeCourseRunKey: String
+  enrollmentCount: Int
+  expectedLearningItems: [String!]!
+  instructors: [Instructor!]!
+  sponsoringOrganizations: [Organization!]!
+  created: DateTime!
+  modified: DateTime!
+}
+
+type CourseRun {
+  id: ID!
+  key: String!
+  title: String!
+  course: Course
+  status: CourseRunStatus!
+  start: DateTime
+  end: DateTime
+  enrollmentStart: DateTime
+  enrollmentEnd: DateTime
+  pacing: CoursePacing!
+  seats: [Seat!]!
+  minEffort: Int
+  maxEffort: Int
+  weeksToComplete: Int
+  language: String
+  mobileAvailable: Boolean!
+  enrollable: Boolean!
+  marketingUrl: String
+  instructionMode: InstructionMode
+  lmsUrl: String
+  externalKey: String
+  enrollmentCount: Int
+  created: DateTime!
+  modified: DateTime!
+}
+
+type CourseBlock {
+  id: ID!
+  usageKey: String!
+  blockId: String!
+  courseId: String!
+  blockType: BlockType!
+  displayName: String
+  studentViewData: JSON
+  studentViewMultiDevice: Boolean
+  students_view_url: String
+  lmsWebUrl: String
+  children: [CourseBlock!]!
+  hasScorePossible: Boolean
+  completion: Float
+}
+
+type CourseImage {
+  raw: String
+  small: String
+  medium: String
+  large: String
+}
+
+type Seat {
+  type: SeatType!
+  price: String
+  currency: String
+  upgradeDeadline: DateTime
+  creditProvider: String
+  creditHours: Int
+  sku: String
+}
+
+type Instructor {
+  key: String!
+  name: String!
+  title: String
+  organization: String
+  bio: String
+  image: String
+  profileImageUrl: String
+  majorWorks: String
+  urls: InstructorUrls
+}
+
+type InstructorUrls {
+  facebook: String
+  twitter: String
+  blog: String
+}
+
+# ─────────────────────────────────────────────
+# Enrollment Types
+# ─────────────────────────────────────────────
+
+type Enrollment {
+  id: ID!
+  user: User!
+  courseRun: CourseRun
+  courseId: String!
+  isActive: Boolean!
+  mode: EnrollmentMode!
+  created: DateTime!
+  upgradeDeadline: DateTime
+  auditAccessExpires: DateTime
+  courseStart: DateTime
+  courseEnd: DateTime
+  courseTarget: String
+  hasAccess: Boolean
+}
+
+# ─────────────────────────────────────────────
+# Grade Types
+# ─────────────────────────────────────────────
+
+type CourseGrade {
+  id: ID!
+  username: String!
+  courseId: String!
+  passed: Boolean!
+  percent: Float!
+  letterGrade: String
+  courseData: GradeCourseData
+  override: GradeOverride
+}
+
+type GradeCourseData {
+  courseBlocked: Boolean
+  courseFailed: Boolean
+  courseCompleted: Boolean
+  gradeBreakdown: [GradeBreakdown!]!
+}
+
+type GradeBreakdown {
+  category: String!
+  percent: Float!
+  detail: String
+}
+
+type SubsectionGrade {
+  id: ID!
+  subsectionId: String!
+  displayName: String!
+  attempted: Boolean!
+  pointsEarned: Float
+  pointsPossible: Float
+  percentGraded: Float
+  gradeType: GradeType
+  created: DateTime!
+  modified: DateTime!
+}
+
+type GradeOverride {
+  overrideReason: String
+  overriddenBy: String
+  overriddenAt: DateTime
+  system: Boolean
+  gradePossible: Float
+  gradeEarned: Float
+}
+
+# ─────────────────────────────────────────────
+# Certificate Types
+# ─────────────────────────────────────────────
+
+type Certificate {
+  id: ID!
+  username: String!
+  courseId: String!
+  type: CertificateType!
+  status: CertificateStatus!
+  mode: String
+  grade: String
+  isValid: Boolean!
+  downloadUrl: String
+  downloadUuid: String
+  verifyUuid: String
+  created: DateTime!
+  modified: DateTime!
+}
+
+# ─────────────────────────────────────────────
+# User / Profile Types
+# ─────────────────────────────────────────────
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  name: String
+  isActive: Boolean!
+  isStaff: Boolean!
+  dateJoined: DateTime!
+  lastLogin: DateTime
+  profile: UserProfile
+  preferences: UserPreferences
+  enrollments: [Enrollment!]!
+  certificates: [Certificate!]!
+}
+
+type UserProfile {
+  id: ID!
+  username: String!
+  name: String
+  bio: String
+  languageProficiencies: [LanguageProficiency!]!
+  country: String
+  city: String
+  email: String
+  mailing_address: String
+  gender: Gender
+  yearOfBirth: Int
+  levelOfEducation: EducationLevel
+  goals: String
+  socialLinks: [SocialLink!]!
+  accountPrivacy: AccountPrivacy!
+  profileImage: ProfileImage
+  requiresParentalConsent: Boolean
+}
+
+type UserPreferences {
+  username: String!
+  preferences: [UserPreference!]!
+}
+
+type UserPreference {
+  key: String!
+  value: String!
+}
+
+type ProfileImage {
+  hasImage: Boolean!
+  imageUrlFull: String
+  imageUrlLarge: String
+  imageUrlMedium: String
+  imageUrlSmall: String
+}
+
+type LanguageProficiency {
+  code: String!
+}
+
+type SocialLink {
+  platform: String!
+  socialLink: String!
+}
+
+# ─────────────────────────────────────────────
+# Learner Activity / Completion Types
+# ─────────────────────────────────────────────
+
+type LearnerActivity {
+  username: String!
+  courseId: String!
+  daysActive: Int
+  lastActivity: DateTime
+  completionSummary: CompletionSummary
+  sectionsCompleted: Int
+  sectionsTotal: Int
+  videosWatched: Int
+  problemsAttempted: Int
+  problemsPassed: Int
+}
+
+type CompletionSummary {
+  completionMean: Float
+  completionMedian: Float
+  complete: Boolean!
+  percentCompleted: Float!
+}
+
+type CourseCompletion {
+  username: String!
+  courseId: String!
+  complete: Boolean!
+  completionDate: DateTime
+  percentCompleted: Float!
+}
+
+# ─────────────────────────────────────────────
+# Discussion Types
+# ─────────────────────────────────────────────
+
+type Discussion {
+  courseId: String!
+  provider: String
+  topics: [DiscussionTopic!]!
+  settings: DiscussionSettings
+}
+
+type DiscussionSettings {
+  allowAnonymousPosts: Boolean
+  allowAnonymousPostsToPeers: Boolean
+  allowDivisionByCohortsInCourseWide: Boolean
+  allowDivisionByCohortsInContentGrouped: Boolean
+  reportedContentEmailNotifications: Boolean
+  postingRestrictions: String
+}
+
+type DiscussionTopic {
+  id: ID!
+  courseId: String!
+  name: String!
+  externalLinks: [String!]!
+  enabled: Boolean!
+  usageKey: String
+  threadListUrl: String
+}
+
+type DiscussionThread {
+  id: ID!
+  courseId: String!
+  topic: DiscussionTopic
+  author: User
+  title: String!
+  body: String!
+  threadType: ThreadType!
+  commentCount: Int!
+  voteCount: Int!
+  flagged: Boolean!
+  abuse_flagged: Boolean
+  read: Boolean
+  unreadCommentCount: Int
+  endorsed: Boolean!
+  pinned: Boolean!
+  closed: Boolean!
+  closedBy: User
+  responses: [DiscussionResponse!]!
+  created: DateTime!
+  updated: DateTime!
+}
+
+type DiscussionResponse {
+  id: ID!
+  thread: DiscussionThread
+  author: User
+  body: String!
+  endorsed: Boolean!
+  voteCount: Int!
+  flagged: Boolean!
+  created: DateTime!
+  updated: DateTime!
+  children: [DiscussionResponse!]!
+}
+
+# ─────────────────────────────────────────────
+# Enterprise Types
+# ─────────────────────────────────────────────
+
+type EnterpriseCustomer {
+  id: ID!
+  uuid: String!
+  name: String!
+  slug: String!
+  active: Boolean!
+  siteUrl: String
+  enableLearnerPortal: Boolean!
+  enableDataSharingConsent: Boolean!
+  catalogs: [EnterpriseCatalog!]!
+  adminUsers: [User!]!
+  branding: EnterpriseBranding
+  created: DateTime!
+  modified: DateTime!
+}
+
+type EnterpriseCatalog {
+  id: ID!
+  uuid: String!
+  title: String!
+  enterpriseCustomer: EnterpriseCustomer
+  courses: CourseConnection
+  programs: ProgramConnection
+  contentFilter: JSON
+  enabled: Boolean!
+  created: DateTime!
+  modified: DateTime!
+}
+
+type EnterpriseBranding {
+  logo: String
+  primaryColor: String
+  secondaryColor: String
+  tertiaryColor: String
+}
+
+# ─────────────────────────────────────────────
+# LTI Types
+# ─────────────────────────────────────────────
+
+type LTIProvider {
+  id: ID!
+  name: String!
+  description: String
+  version: LTIVersion!
+  consumerKey: String
+  launchUrl: String
+  openIdConnectUrl: String
+  enabled: Boolean!
+  created: DateTime!
+}
+
+# ─────────────────────────────────────────────
+# Program Types
+# ─────────────────────────────────────────────
+
+type Program {
+  id: ID!
+  uuid: String!
+  title: String!
+  subtitle: String
+  type: ProgramType!
+  status: ProgramStatus!
+  organization: Organization
+  courses: [Course!]!
+  banner_image: ProgramBannerImage
+  card_image_url: String
+  marketing_url: String
+  overview: String
+  weeks_to_complete: Int
+  min_hours_effort_per_week: Int
+  max_hours_effort_per_week: Int
+  instructors: [Instructor!]!
+  subjects: [Subject!]!
+  skills: [Skill!]!
+  languages: [String!]!
+  price_ranges: [PriceRange!]!
+  created: DateTime!
+  modified: DateTime!
+}
+
+type ProgramBannerImage {
+  large: ImageSpec
+  medium: ImageSpec
+  small: ImageSpec
+  x_small: ImageSpec
+}
+
+type ImageSpec {
+  url: String!
+  width: Int
+  height: Int
+}
+
+type PriceRange {
+  min: Float
+  max: Float
+  currency: String
+  total: Float
+}
+
+# ─────────────────────────────────────────────
+# Organization Types
+# ─────────────────────────────────────────────
+
+type Organization {
+  id: ID!
+  key: String!
+  name: String!
+  description: String
+  homepage_url: String
+  logo_image_url: String
+  banner_image_url: String
+  tags: [Tag!]!
+  courses: [Course!]!
+  programs: [Program!]!
+}
+
+# ─────────────────────────────────────────────
+# Taxonomy / Tagging Types
+# ─────────────────────────────────────────────
+
+type Taxonomy {
+  id: ID!
+  name: String!
+  description: String
+  allowFreeText: Boolean!
+  visibleToAuthors: Boolean!
+  tags: [TaxonomyTag!]!
+}
+
+type TaxonomyTag {
+  id: ID!
+  value: String!
+  taxonomy: Taxonomy
+  parent: TaxonomyTag
+  children: [TaxonomyTag!]!
+  externalId: String
+}
+
+type Tag {
+  id: ID!
+  name: String!
+  slug: String!
+}
+
+type Subject {
+  id: ID!
+  name: String!
+  slug: String!
+  subtitle: String
+  description: String
+  bannerImageUrl: String
+  cardImageUrl: String
+}
+
+type Skill {
+  name: String!
+  description: String
+  category: SkillCategory
+}
+
+type SkillCategory {
+  name: String!
+}
+
+# ─────────────────────────────────────────────
+# Connection / Pagination Types
+# ─────────────────────────────────────────────
+
+type CourseConnection {
+  nodes: [Course!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CourseRunConnection {
+  nodes: [CourseRun!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type EnrollmentConnection {
+  nodes: [Enrollment!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CourseGradeConnection {
+  nodes: [CourseGrade!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CourseCompletionConnection {
+  nodes: [CourseCompletion!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DiscussionThreadConnection {
+  nodes: [DiscussionThread!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProgramConnection {
+  nodes: [Program!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type OrganizationConnection {
+  nodes: [Organization!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type UserConnection {
+  nodes: [User!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+  page: Int
+  pageSize: Int
+  totalPages: Int
+}
+
+# ─────────────────────────────────────────────
+# Input Types
+# ─────────────────────────────────────────────
+
+input PaginationInput {
+  page: Int
+  pageSize: Int
+  cursor: String
+}
+
+input CourseFilter {
+  organizationKey: String
+  subject: String
+  level: CourseLevel
+  language: String
+  availability: CourseAvailability
+  query: String
+  tags: [String!]
+  programType: ProgramType
+}
+
+input CourseRunFilter {
+  courseId: ID
+  status: CourseRunStatus
+  pacing: CoursePacing
+  enrollable: Boolean
+}
+
+input EnrollmentFilter {
+  isActive: Boolean
+  mode: EnrollmentMode
+  courseId: ID
+}
+
+input UserFilter {
+  query: String
+  isActive: Boolean
+  isStaff: Boolean
+}
+
+input ThreadFilter {
+  topicId: ID
+  threadType: ThreadType
+  authorUsername: String
+  flagged: Boolean
+  endorsed: Boolean
+  orderBy: ThreadOrderBy
+}
+
+input ProgramFilter {
+  type: ProgramType
+  status: ProgramStatus
+  organizationKey: String
+  subject: String
+}
+
+# Mutation Inputs
+
+input EnrollUserInput {
+  username: String!
+  courseId: ID!
+  mode: EnrollmentMode!
+  emailStudents: Boolean
+}
+
+input UnenrollUserInput {
+  username: String!
+  courseId: ID!
+}
+
+input UpdateEnrollmentModeInput {
+  username: String!
+  courseId: ID!
+  mode: EnrollmentMode!
+}
+
+input GenerateCertificateInput {
+  username: String!
+  courseId: ID!
+  generateMode: CertificateGenerateMode
+}
+
+input InvalidateCertificateInput {
+  username: String!
+  courseId: ID!
+  reason: String
+}
+
+input UpdateUserProfileInput {
+  username: String!
+  name: String
+  bio: String
+  country: String
+  city: String
+  yearOfBirth: Int
+  gender: Gender
+  levelOfEducation: EducationLevel
+  goals: String
+}
+
+input UpdateUserPreferencesInput {
+  username: String!
+  preferences: [UserPreferenceInput!]!
+}
+
+input UserPreferenceInput {
+  key: String!
+  value: String!
+}
+
+input CreateDiscussionThreadInput {
+  courseId: ID!
+  topicId: ID!
+  title: String!
+  body: String!
+  threadType: ThreadType!
+  anonymous: Boolean
+}
+
+input ReplyToThreadInput {
+  threadId: ID!
+  body: String!
+  parentId: ID
+  endorsed: Boolean
+}
+
+input FlagContentInput {
+  contentId: ID!
+  contentType: DiscussionContentType!
+  reason: String
+}
+
+input OverrideGradeInput {
+  username: String!
+  courseId: ID!
+  subsectionId: ID
+  gradeEarned: Float!
+  gradePossible: Float!
+  overrideReason: String!
+}
+
+# ─────────────────────────────────────────────
+# Payload Types
+# ─────────────────────────────────────────────
+
+type EnrollUserPayload {
+  enrollment: Enrollment
+  errors: [UserError!]!
+}
+
+type UnenrollUserPayload {
+  success: Boolean!
+  errors: [UserError!]!
+}
+
+type UpdateEnrollmentModePayload {
+  enrollment: Enrollment
+  errors: [UserError!]!
+}
+
+type GenerateCertificatePayload {
+  certificate: Certificate
+  errors: [UserError!]!
+}
+
+type InvalidateCertificatePayload {
+  success: Boolean!
+  errors: [UserError!]!
+}
+
+type UpdateUserProfilePayload {
+  userProfile: UserProfile
+  errors: [UserError!]!
+}
+
+type UpdateUserPreferencesPayload {
+  userPreferences: UserPreferences
+  errors: [UserError!]!
+}
+
+type CreateDiscussionThreadPayload {
+  thread: DiscussionThread
+  errors: [UserError!]!
+}
+
+type ReplyToThreadPayload {
+  response: DiscussionResponse
+  errors: [UserError!]!
+}
+
+type FlagContentPayload {
+  success: Boolean!
+  errors: [UserError!]!
+}
+
+type OverrideGradePayload {
+  gradeOverride: GradeOverride
+  errors: [UserError!]!
+}
+
+type UserError {
+  field: String
+  message: String!
+  code: String
+}
+
+# ─────────────────────────────────────────────
+# Enums
+# ─────────────────────────────────────────────
+
+enum CourseLevel {
+  INTRODUCTORY
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseAvailability {
+  CURRENT
+  STARTING_SOON
+  UPCOMING
+  ARCHIVED
+}
+
+enum CourseRunStatus {
+  PUBLISHED
+  UNPUBLISHED
+  REVIEWED
+  PREVIEW
+}
+
+enum CoursePacing {
+  SELF_PACED
+  INSTRUCTOR_PACED
+}
+
+enum BlockType {
+  COURSE
+  CHAPTER
+  SEQUENTIAL
+  VERTICAL
+  HTML
+  PROBLEM
+  VIDEO
+  DISCUSSION
+  DRAG_AND_DROP_V2
+  LIBRARY_CONTENT
+  OPENASSESSMENT
+  LTI_CONSUMER
+}
+
+enum EnrollmentMode {
+  AUDIT
+  HONOR
+  VERIFIED
+  PROFESSIONAL
+  NO_ID_PROFESSIONAL
+  CREDIT
+  MASTERS
+  EXECUTIVE_EDUCATION
+}
+
+enum CertificateType {
+  HONOR
+  VERIFIED
+  PROFESSIONAL
+  NO_ID_PROFESSIONAL
+  CREDIT
+}
+
+enum CertificateStatus {
+  DOWNLOADABLE
+  NOTPASSING
+  UNAVAILABLE
+  AUDIT_PASSING
+  AUDIT_NOTPASSING
+  GENERATING
+  ERROR
+  DELETED
+}
+
+enum CertificateGenerateMode {
+  honor-code
+  no-id-professional
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum EducationLevel {
+  NONE
+  OTHER
+  JUNIOR_SECONDARY
+  SECONDARY
+  ASSOCIATE
+  BACHELORS
+  MASTERS
+  DOCTORATE
+  PROFESSIONAL
+}
+
+enum AccountPrivacy {
+  PRIVATE
+  ALL_USERS
+}
+
+enum ProgramType {
+  MICROMASTERS
+  XSERIES
+  PROFESSIONAL_CERTIFICATE
+  PROFESSIONAL_PROGRAM_WL
+  CREDIT
+  MASTERS
+  DOCTORATE
+  LICENSE
+  CERTIFICATE
+  BOOT_CAMP
+}
+
+enum ProgramStatus {
+  ACTIVE
+  RETIRED
+  DELETED
+  UNPUBLISHED
+}
+
+enum LTIVersion {
+  LTI_1P0
+  LTI_1P1
+  LTI_1P3
+}
+
+enum GradeType {
+  GRADED
+  NOT_GRADED
+}
+
+enum ThreadType {
+  DISCUSSION
+  QUESTION
+}
+
+enum ThreadOrderBy {
+  LAST_ACTIVITY_AT
+  COMMENT_COUNT
+  VOTE_COUNT
+  DATE
+}
+
+enum DiscussionContentType {
+  THREAD
+  RESPONSE
+  COMMENT
+}
+
+enum InstructionMode {
+  ONLINE
+  ONSITE
+  BLENDED
+}
+
+enum SeatType {
+  AUDIT
+  HONOR
+  VERIFIED
+  PROFESSIONAL
+  NO_ID_PROFESSIONAL
+  CREDIT
+  MASTERS
+  EXECUTIVE_EDUCATION
+}
+
+# ─────────────────────────────────────────────
+# Scalar Types
+# ─────────────────────────────────────────────
+
+scalar DateTime
+scalar JSON

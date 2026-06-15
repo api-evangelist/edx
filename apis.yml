@@ -2,60 +2,63 @@ aid: edx
 url: https://raw.githubusercontent.com/api-evangelist/edx/refs/heads/main/apis.yml
 name: edX
 kind: company
-description: edX is an online learning platform now operated by 2U; the underlying Open edX software is
-  open source. Open edX exposes a comprehensive REST API surface (Enrollment, Courses, Users, Catalog,
-  Discussion, Grades, LTI, Enterprise) and hosts a public API at api.edx.org for partners.
+description: edX is an online learning platform now operated by 2U; the underlying
+  Open edX software is open source. Open edX exposes a comprehensive REST API surface
+  (Enrollment, Courses, Users, Catalog, Discussion, Grades, LTI, Enterprise) and hosts
+  a public API at api.edx.org for partners.
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - EdTech
-  - Online Learning
-  - Open Source
-  - MOOC
+- EdTech
+- Online Learning
+- Open Source
+- MOOC
 created: '2026-05-08'
 modified: '2026-05-08'
 specificationVersion: '0.19'
 apis:
-  - aid: edx:open-edx-rest
-    name: Open edX REST API
-    description: 'Open-source REST API surface across the Open edX platform: Enrollment API, Courses API,
-      User API, Catalog API, Discussion API, Grades API, LTI APIs, Enterprise API. Implementations expose
-      endpoints under each Open edX deployment.'
-    humanURL: https://docs.openedx.org/
-    tags:
-    - REST
-    - Open Source
-    - LMS
-    properties:
-    - type: Documentation
-      url: https://docs.openedx.org/
-    - type: GitHub
-      url: https://github.com/openedx
-  - aid: edx:edx-api
-    name: edX Public API
-    description: Public/partner API surface hosted at api.edx.org for the edx.org learning marketplace.
-      Access scopes vary by partner agreement.
-    humanURL: https://docs.openedx.org/
-    baseURL: https://api.edx.org
-    tags:
-    - REST
-    - Catalog
-    - Partner
-    properties:
-    - type: Documentation
-      url: https://docs.openedx.org/
-common:
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/edx1
-  - type: Website
-    url: https://www.edx.org/
-  - type: Developer
+- aid: edx:open-edx-rest
+  name: Open edX REST API
+  description: 'Open-source REST API surface across the Open edX platform: Enrollment
+    API, Courses API, User API, Catalog API, Discussion API, Grades API, LTI APIs,
+    Enterprise API. Implementations expose endpoints under each Open edX deployment.'
+  humanURL: https://docs.openedx.org/
+  tags:
+  - REST
+  - Open Source
+  - LMS
+  properties:
+  - type: Documentation
     url: https://docs.openedx.org/
-  - type: Plans
-    url: plans/edx-plans-pricing.yml
-  - type: RateLimits
-    url: rate-limits/edx-rate-limits.yml
-  - type: FinOps
-    url: finops/edx-finops.yml
+  - type: GitHub
+    url: https://github.com/openedx
+  - url: graphql/edx-graphql.md
+    type: GraphQL
+- aid: edx:edx-api
+  name: edX Public API
+  description: Public/partner API surface hosted at api.edx.org for the edx.org learning
+    marketplace. Access scopes vary by partner agreement.
+  humanURL: https://docs.openedx.org/
+  baseURL: https://api.edx.org
+  tags:
+  - REST
+  - Catalog
+  - Partner
+  properties:
+  - type: Documentation
+    url: https://docs.openedx.org/
+common:
+- type: LinkedIn
+  url: https://www.linkedin.com/company/edx1
+- type: Website
+  url: https://www.edx.org/
+- type: Developer
+  url: https://docs.openedx.org/
+- type: Plans
+  url: plans/edx-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/edx-rate-limits.yml
+- type: FinOps
+  url: finops/edx-finops.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
