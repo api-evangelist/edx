@@ -6,7 +6,19 @@ description: edX is an online learning platform now operated by 2U; the underlyi
   Open edX software is open source. Open edX exposes a comprehensive REST API surface
   (Enrollment, Courses, Users, Catalog, Discussion, Grades, LTI, Enterprise) and hosts
   a public API at api.edx.org for partners.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: free
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Free
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/edx.png
 tags:
 - EdTech
 - Online Learning
