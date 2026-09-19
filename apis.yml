@@ -74,6 +74,10 @@ apis:
   tags:
   - REST
   - Catalog
+  - Partners
+  tags_raw:
+  - REST
+  - Catalog
   - Partner
   properties:
   - type: Documentation
