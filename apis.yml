@@ -33,13 +33,14 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/edx.png
 tags:
 - EdTech
 - Online Learning
-- Open-Source
+- Open Source
 - MOOC
 tags_raw:
 - EdTech
 - Online Learning
 - Open Source
 - MOOC
+- Open-Source
 created: '2026-05-08'
 modified: '2026-05-08'
 specificationVersion: '0.23'
@@ -52,19 +53,18 @@ apis:
   humanURL: https://docs.openedx.org/
   tags:
   - REST
-  - Open-Source
+  - Open Source
   - LMS
   tags_raw:
   - REST
   - Open Source
   - LMS
+  - Open-Source
   properties:
   - type: Documentation
     url: https://docs.openedx.org/
   - type: GitHub
     url: https://github.com/openedx
-  - url: graphql/edx-graphql.md
-    type: GraphQL
 - aid: edx:edx-api
   name: edX Public API
   description: Public/partner API surface hosted at api.edx.org for the edx.org learning
